@@ -1,0 +1,3 @@
+module.exports=`<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>myproject</title><style>body {
+        min-width: 800px;
+      }</style><link href=/static/css/app.577ffcbf9f6e6ff08e65f79cb0324dd6.css rel=stylesheet></head><body style="background-color: #f8f8f9;"><div id=app></div><script type=text/javascript src=/static/js/manifest.b1d35464051c323ab507.js></script><script type=text/javascript src=/static/js/vendor.85a12fe0a4d1ba57b6d3.js></script><script type=text/javascript src=/static/js/app.0527f9b1e77f407f47b9.js></script></body></html>`

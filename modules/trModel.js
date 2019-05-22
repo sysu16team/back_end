@@ -119,6 +119,22 @@ class TRModel {
         })
     }
 
+    static async accepter_make_complement(post_body) {
+        let task_type = await models.Task.findByPk(post_body.task_id).type
+        if (task_type == 1 /** 问卷调查 */ && post_body.questionnaire_path == undefined) {
+            throw Error("Need questionnaire result file")
+        }
+        post_body.questionnaire_path = post_body.questionnaire_path == undefined ? "" : post_body.questionnaire_path
+        return await models.TR.update({
+            state: models.status_code.tr.WAITING_CONFIRM,
+            questionnaire_path: post_body.questionnaire_path
+        }, {
+            where: {
+                username: post_body.username,
+                task_id: post_body.task_id
+            }
+        })
+    }
 
     static async comfirm_complement(username, task_id, score) {
         score = parseFloat(score)

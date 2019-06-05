@@ -82,7 +82,14 @@ class TRModel {
         })
     }
 
- 
+    static async deleteTR(username, task_id) {
+        return await models.TR.destroy({
+            where: {
+                username: username,
+                task_id: task_id
+            }
+        })
+    }
     
     static async searchTRByRestrict(restriction) {
         return await models.TR.findAll({

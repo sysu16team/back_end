@@ -295,8 +295,35 @@ class TRController {
             
         }
     }
- 
-  
+    
+    static async searchTR(ctx) {
+        let query = ctx.query
+        let result = undefined
+        console.log('a')
+        if (query.task_id && query.username) {
+            try {
+                result = await TRModel.searchTR(query.username, query.task_id)
+                result = {
+                    code: 200, 
+                    msg: "Success",
+                    data: result
+                }
+            } catch (err) {
+                result = {
+                    code: 500,
+                    msg: "Failed",
+                    data: err.message
+                }
+            }
+        } else {
+            result = {
+                code: 412,
+                msg: "Params is not enough",
+                data: []
+            }
+        }
+        response(ctx, result.code, result.msg, result.data);
+    }
 
     static async submitQuestionnaire(ctx) {
         let serverPath = path.join(__dirname, '../static/uploads/');

@@ -238,20 +238,37 @@ class TRController {
      * @param {*} ctx 
      */
     
-   
- 
-    static async searchTR(ctx) {
-        let query = ctx.query
+    static async completeTask(ctx) {
+        
+        let post_body = ctx.request.body
         let result = undefined
-        if (query.task_id && query.username) {
+        let current_user = await getUsernameFromCtx(ctx)
+        if (current_user == -1 || current_user == -2 || current_user == undefined || current_user == null) {
+            response(ctx, 401, "please login first", []);
+            return;
+        }
+        
+        if (post_body.task_id != undefined) {
+            
             try {
-                result = await TRModel.searchTR(query.username, query.task_id)
+                console.log(post_body.task_id)
+                let endtime = (await TaskModel.searchTaskById(post_body.task_id)).get('endtime');
+                console.log("dddddddddddddd")
+                /*
+                if (endtime > sd.format(new Date())) {
+                    response(ctx, 402, "Cannot confirm the task passed the endtime", []);
+                    return;
+                }*/
+                
+                post_body.username = current_user
+                result = await TRModel.accepter_make_complement(post_body)
                 result = {
-                    code: 200, 
+                    code: 200,
                     msg: "Success",
                     data: result
                 }
             } catch (err) {
+                
                 result = {
                     code: 500,
                     msg: "Failed",
@@ -261,12 +278,25 @@ class TRController {
         } else {
             result = {
                 code: 412,
-                msg: "Params is not enough",
+                msg: "Params wrong...",
                 data: []
             }
         }
         response(ctx, result.code, result.msg, result.data);
+
+        try {
+            let toastTask = await TaskModel.searchTaskById(post_body.task_id);
+            ToastModel.createToast(toastTask.publisher, 11, 
+                                    ToastInfo.t11(toastTask.title, current_user), 
+                                    current_user, null, null,
+                                    post_body.task_id, toastTask.title);
+        } catch (err) {
+            console.log("err")
+            
+        }
     }
+ 
+  
 
     static async submitQuestionnaire(ctx) {
         let serverPath = path.join(__dirname, '../static/uploads/');

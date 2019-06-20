@@ -237,7 +237,82 @@ class TRController {
      *  
      * @param {*} ctx 
      */
-    
+    static async confirmComplement(ctx) {
+        let result = undefined
+        let post_body = ctx.request.body
+        let current_user = await getUsernameFromCtx(ctx)
+        if (current_user == -1 || current_user == -2 || current_user == undefined || current_user == null) {
+            response(ctx, 401, "Please login first", []);
+            return;
+        }
+        if (post_body.username != undefined && post_body.task_id != undefined && post_body.score != undefined) {
+            try {
+                // 判断
+                let publisher = (await TaskModel.searchTaskById(post_body.task_id)).publisher;
+                console.log(publisher, current_user)
+                if (publisher == current_user) {
+                    let data = undefined
+                    let task_money = (await TaskModel.searchTaskById(post_body.task_id)).money;
+                    
+                    if (post_body.username instanceof Array) {
+                        data = await TRModel.batch_confirm_complement(post_body.username, 
+                                                                      post_body.task_id, 
+                                                                      post_body.score);
+                        // print('[R 252\t] data is ', data)
+                        await UserModel.batchUpdateUserMoney(post_body.username, task_money);
+                        // print('[R 262\t] user model update money ok')
+                    } else {
+                        data = await TRModel.comfirm_complement(post_body.username, 
+                                                                post_body.task_id, 
+                                                                post_body.score);
+
+                        // print('[R 261\t] data is data')
+                        await UserModel.updateUserMoney(post_body.username, task_money);
+                        // print('[R 262\t] user model update money ok')
+                    }
+                    result = {
+                        code: 200, 
+                        msg: 'Success',
+                        data: data
+                    }
+                } else {
+                    result = {
+                        code: 412,
+                        msg: "Cannot confirm task not published by u",
+                        data: []
+                    }
+                }
+                
+            } catch (err) {
+                console.log(err)
+                result = {
+                    code: 500,
+                    msg: "Failed",
+                    data: err.message
+                }
+            }
+        } else {
+            result = {
+                code: 412,
+                msg: 'Param is not enough',
+                data: []
+            }
+        }
+
+        ctx.response.status = result.code
+        ctx.body = {
+            code: result.code,
+            msg: result.msg,
+            data: result.data
+        }
+
+        let toastTask = await TaskModel.searchTaskById(post_body.task_id);
+        ToastModel.createToast(post_body.username, 13, 
+                                ToastInfo.t13(toastTask.title, toastTask.publisher), 
+                                toastTask.publisher, null, null,
+                                post_body.task_id, toastTask.title);
+    }
+
     static async completeTask(ctx) {
         
         let post_body = ctx.request.body
@@ -295,11 +370,10 @@ class TRController {
             
         }
     }
-    
+ 
     static async searchTR(ctx) {
         let query = ctx.query
         let result = undefined
-        console.log('a')
         if (query.task_id && query.username) {
             try {
                 result = await TRModel.searchTR(query.username, query.task_id)

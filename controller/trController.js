@@ -165,7 +165,7 @@ class TRController {
     
 
     static async searchTRBySomeRestriction(terms) {
-        
+        let result = undefined
         try {
             let data = await TRModel.searchTRByRestrict(terms)
             result = {

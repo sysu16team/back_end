@@ -162,7 +162,24 @@ class TRController {
      * @param ctx
      * @returns {Promise.<void>}
      */
-    
+    static async searchByUsername(username) {
+        let result = undefined
+        try {
+            let data = await TRModel.searchTRByUsername(username);
+            result = {
+                code: 200, 
+                msg: '查询成功',
+                data: data
+            }
+        } catch (err) {
+            result = {
+                code: 500,
+                msg: '查询失败',
+                data: err
+            }
+        }
+        return result
+    }
 
     static async searchTRBySomeRestriction(terms) {
         let result = undefined

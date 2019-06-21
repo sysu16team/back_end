@@ -164,7 +164,24 @@ class TRController {
      */
     
 
-    
+    static async searchTRBySomeRestriction(terms) {
+        
+        try {
+            let data = await TRModel.searchTRByRestrict(terms)
+            result = {
+                code: 200,
+                msg: "Success",
+                data: data
+            }
+        } catch (err) {
+            result = {
+                code: 500,
+                msg: "查询出错",
+                data: err
+            }
+        }
+        return result
+    }
 
     static async deleteTR(ctx) {
         let current_user = await getUsernameFromCtx(ctx)

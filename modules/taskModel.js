@@ -311,7 +311,7 @@ class TaskModel {
 
         
       
-        console.log('aaaaaa')
+        
         
         task_ids = task_ids.map((item) => {
             return item.task_id
@@ -325,7 +325,7 @@ class TaskModel {
         
        
         
-        if (task_ids.length == 0) task_ids.push(1)
+        //if (task_ids.length == 0) task_ids.push(1)
         //console.log(task_ids)
 
         

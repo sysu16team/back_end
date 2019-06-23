@@ -188,7 +188,8 @@ class TaskModel {
                 publisher: restriction.publisher
             },
             include: [{
-                
+                association: models.Task.belongsTo(models.User, {foreignKey: 'publisher'}),
+                attributes: ['username']
             }, {
                 association: models.Task.hasMany(models.TR, {foreignKey: 'task_id'})
             }]

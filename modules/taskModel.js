@@ -106,7 +106,6 @@ class TaskModel {
      * @param task_id
      */
     static async searchTaskById(task_id) {
-        //console.log("ddddddd")
         return await models.Task.findByPk(task_id, {
             include: [{
                 association: models.Task.hasMany(models.Task, {foreignKey: 'task_id'})
@@ -189,8 +188,7 @@ class TaskModel {
                 publisher: restriction.publisher
             },
             include: [{
-                association: models.Task.belongsTo(models.User, {foreignKey: 'publisher'}),
-                attributes: ['username']
+                
             }, {
                 association: models.Task.hasMany(models.TR, {foreignKey: 'task_id'})
             }]

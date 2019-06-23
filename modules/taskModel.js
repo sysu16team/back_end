@@ -68,7 +68,10 @@ class TaskModel {
         console.log(222222)
 
 
-       
+        if (task_ids.length == 0) {
+            // No task can be found, then reutrn []
+            return [];
+        } 
         
         // 这里可以搜出来所有符合Query要求的任务
         let time = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss');

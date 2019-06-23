@@ -68,10 +68,7 @@ class TaskModel {
         console.log(222222)
 
 
-        if (task_ids.length == 0) {
-            // No task can be found, then reutrn []
-            return [];
-        } 
+       
         
         // 这里可以搜出来所有符合Query要求的任务
         let time = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss');
@@ -106,7 +103,7 @@ class TaskModel {
      * @param task_id
      */
     static async searchTaskById(task_id) {
-        console.log("ddddddd")
+        //console.log("ddddddd")
         return await models.Task.findByPk(task_id, {
             include: [{
                 association: models.Task.hasMany(models.Task, {foreignKey: 'task_id'})

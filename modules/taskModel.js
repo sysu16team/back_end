@@ -49,7 +49,7 @@ class TaskModel {
          * 3. Delete shielded tasks
          */
         // let tr_where, task_where;
-        restriction = checkParamsAndConvert(restriction, ['range'])
+        restriction = checkParamsAndConvert(restriction, ['range', 'type'])
         console.log(restriction)
         let task_ids = await models.Task.findAll({
             where: {  
@@ -75,7 +75,16 @@ class TaskModel {
         
         // 这里可以搜出来所有符合Query要求的任务
         let time = sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss');
-      
+        let tasks = await models.Task.findAll({
+            where: {
+                task_id: {
+                    [Op.or]: task_ids
+                },
+                type: restriction.type,
+                endtime: {
+                    [Op.gt]: time
+                }
+            },
             include: [{
                 association: models.Task.belongsTo(models.User, {foreignKey: 'publisher'}),
                 attributes: ['username']
